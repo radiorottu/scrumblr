@@ -8,6 +8,8 @@ var keyTrap = null;
 var baseurl = location.pathname.substring(0, location.pathname.lastIndexOf('/'));
 var socket = io.connect({path: baseurl + "/socket.io"});
 
+moment.locale(navigator.language || navigator.languages[0]);
+
 //an action has happened, send it to the
 //server
 function sendAction(a, d) {
@@ -108,7 +110,8 @@ function getMessage(m) {
             break;
 
         case 'editCard':
-            $("#" + data.id).children('.content:first').text(data.value);
+            $("#" + data.id).children('.content:first').attr('data-text', data.value);
+            $("#" + data.id).children('.content:first').html(marked(data.value));
             break;
 
         case 'initColumns':
@@ -147,6 +150,25 @@ function getMessage(m) {
             resizeBoard(message.data);
             break;
 
+        case 'export':
+            download(message.data.filename, message.data.text);
+            break;
+
+        case 'addRevision':
+            addRevision(message.data);
+            break;
+
+        case 'deleteRevision':
+            $('#revision-'+message.data).remove();
+            break;
+
+        case 'initRevisions':
+            $('#revisions-list').empty();
+            for (var i = 0; i < message.data.length; i++) {
+                addRevision(message.data[i]);
+            }
+            break;
+
         default:
             //unknown message
             alert('unknown action: ' + JSON.stringify(message));
@@ -171,12 +193,13 @@ function drawNewCard(id, text, x, y, rot, colour, sticker, animationspeed) {
 	<img class="card-image" src="images/' +
         colour + '-card.png">\
 	<div id="content:' + id +
-        '" class="content stickertarget droppable">' +
-        text + '</div><span class="filler"></span>\
+        '" class="content stickertarget droppable" data-text="">' +
+        marked(text) + '</div><span class="filler"></span>\
 	</div>';
 
     var card = $(h);
     card.appendTo('#board');
+    $("#" + id).children('.content:first').attr('data-text', text);
 
     //@TODO
     //Draggable has a bug which prevents blur event
@@ -287,10 +310,14 @@ function drawNewCard(id, text, x, y, rot, colour, sticker, animationspeed) {
     );
 
     card.children('.content').editable(function(value, settings) {
+        $("#" + id).children('.content:first').attr('data-text', value);
         onCardChange(id, value);
-        return (value);
+        return (marked(value));
     }, {
         type: 'textarea',
+        data: function() {
+            return $("#" + id).children('.content:first').attr('data-text');
+        },
         submit: 'OK',
         style: 'inherit',
         cssclass: 'card-edit-form',
@@ -679,6 +706,53 @@ function adjustCard(offsets, doSync) {
 //////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////
 
+function download(filename, text) {
+    var element = document.createElement('a');
+    var mime    = 'text/plain';
+    if (filename.match(/.csv$/)) {
+        mime = 'text/csv';
+    }
+    element.setAttribute('href', 'data:'+mime+';charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', filename);
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
+}
+
+function addRevision(timestamp) {
+    var li = $('<li id="revision-'+timestamp+'"></li>');
+    var s1 = $('<span></span>');
+    var s2 = $('<img src="../images/stickers/sticker-deletestar.png" alt="delete revision">');
+    if (typeof(timestamp) === 'string') {
+        timestamp = parseInt(timestamp);
+    }
+    s1.text(moment(timestamp).format('LLLL'));
+
+    li.append(s1);
+    li.append(s2);
+    $('#revisions-list').append(li);
+
+    s1.click(function() {
+        socket.json.send({
+            action: 'exportRevision',
+            data: timestamp
+        });
+    });
+    s2.click(function() {
+        socket.json.send({
+            action: 'deleteRevision',
+            data: timestamp
+        });
+    });
+}
+
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+
 $(function() {
 
 
@@ -840,5 +914,53 @@ $(function() {
         containment: 'parent'
     });
 
+    $('#export-txt').click(function() {
+        socket.json.send({
+            action: 'exportTxt',
+            data: ($('.col').length !== 0) ? $('.col').css('width').replace('px', '') : null
+        });
+    })
 
+    $('#export-csv').click(function() {
+        socket.json.send({
+            action: 'exportCsv',
+            data: ($('.col').length !== 0) ? $('.col').css('width').replace('px', '') : null
+        });
+    })
+
+    $('#export-json').click(function() {
+        socket.json.send({
+            action: 'exportJson',
+            data: {
+                width: $('.board-outline').css('width').replace('px', ''),
+                height: $('.board-outline').css('height').replace('px', '')
+            }
+        });
+    })
+
+    $('#import-file').click(function(evt) {
+        evt.stopPropagation();
+        evt.preventDefault();
+
+        var f  = $('#import-input').get(0).files[0];
+        var fr = new FileReader();
+        fr.onloadend = function() {
+            var text = fr.result;
+            socket.json.send({
+                action: 'importJson',
+                data: JSON.parse(text)
+            });
+        };
+        fr.readAsBinaryString(f);
+    })
+
+    $('#create-revision').click(function() {
+        socket.json.send({
+            action: 'createRevision',
+            data: {
+                width: $('.board-outline').css('width').replace('px', ''),
+                height: $('.board-outline').css('height').replace('px', '')
+            }
+        });
+    })
 });
