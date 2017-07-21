@@ -286,6 +286,9 @@ xopacity: .5;
 	letter-spacing: 2px;
 }
 
+.main-tool-bar {
+	height: 45px;
+}
 
 #user-icon {
 	vertical-align: text-top;
