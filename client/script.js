@@ -391,6 +391,16 @@ function createCard(id, text, x, y, rot, colour) {
 
 }
 
+function getCardColour() {
+  var color;
+
+  if ('random' == $('#card-color').val())
+      color = randomCardColour();
+  else
+      color = $('#card-color').val();
+  return color;
+}
+
 function randomCardColour() {
     var colours = ['yellow', 'green', 'blue', 'white'];
 
@@ -769,6 +779,7 @@ $(function() {
     $("#create-card")
         .click(function() {
             var rotation = Math.random() * 10 - 5; //add a bit of random rotation (+/- 10deg)
+            // FIXME: get uniq id
             uniqueID = Math.round(Math.random() * 99999999); //is this big enough to assure uniqueness?
             //alert(uniqueID);
             createCard(
@@ -776,7 +787,7 @@ $(function() {
                 '',
                 58, $('div.board-outline').height(), // hack - not a great way to get the new card coordinates, but most consistant ATM
                 rotation,
-                randomCardColour());
+                getCardColour());
         });
 
 
@@ -901,18 +912,6 @@ $(function() {
             adjustCard(offsets, true);
         });
     })();
-
-
-
-    $('#marker').draggable({
-        axis: 'x',
-        containment: 'parent'
-    });
-
-    $('#eraser').draggable({
-        axis: 'x',
-        containment: 'parent'
-    });
 
     $('#export-txt').click(function() {
         socket.json.send({

@@ -534,17 +534,6 @@ input:hover {
 	color: #333;
 }
 
-#marker {
-	position: absolute; bottom: 0; right: 200px;
-	z-index: 1;
-}
-
-#eraser {
-	position: absolute; bottom: 0; right: 70px;
-	z-index: 1;
-}
-
-
 .card-hover-draggable {
 	xborder: 1px dashed blue;
 	box-shadow:inset 0 0 40px rgba(128, 128, 256,0.2);

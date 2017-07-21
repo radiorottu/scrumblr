@@ -1,5 +1,8 @@
 extends layout
 
+cardColors = ["this": "something", "that": "something else", "those": "more stuff", "these": "also included"}
+
+
 block body
 	- if (locals.demo)
 		div.notice-bar this is a demo board. to make a private board, go to <a href="/demo">/demo</a>
@@ -12,9 +15,6 @@ block body
 	div.board-outline
 		div#board
 			div#board-doodles
-			image#marker(src='images/marker.png')
-			image#eraser(src='images/eraser.png')
-
 
 			table#board-table.board-table
 				tr
@@ -24,6 +24,9 @@ block body
 
 
 	div.buttons
+		select(id="card-color", name="card-color")
+			each value in [['random', 'Random'], ['yellow', 'Story'], ['green', 'Middleware'], ['blue', 'Task'], ['white', 'White']]
+				option(value="#{value[0]}") #{value[1]}
 		i#create-card.fa.fa-plus-circle.fa-2x.bottom-icon
 		i#smallify.fa.fa-expand.fa-2x.bottom-icon
 
