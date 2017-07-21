@@ -307,9 +307,10 @@ xopacity: .5;
 }
 
 .stickers {
-	width: 1000px;
+	float:right;
 	text-align: right;
-	padding-top: 2px; margin: 0;
+	padding: 10px 30px;
+	margin: 0;
 }
 
 

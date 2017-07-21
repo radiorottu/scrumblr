@@ -785,7 +785,7 @@ $(function() {
             createCard(
                 'card' + uniqueID,
                 '',
-                58, $('div.board-outline').height(), // hack - not a great way to get the new card coordinates, but most consistant ATM
+                58, $('#create-card').height(),
                 rotation,
                 getCardColour());
         });
