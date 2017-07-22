@@ -158,6 +158,7 @@ io.sockets.on('connection', function (client) {
 				data = message.data;
 				clean_data = {};
 				clean_data.text = scrub(data.text);
+				clean_data.desc = scrub(data.desc);
 				clean_data.id = scrub(data.id);
 				clean_data.x = scrub(data.x);
 				clean_data.y = scrub(data.y);
@@ -165,7 +166,7 @@ io.sockets.on('connection', function (client) {
 				clean_data.colour = scrub(data.colour);
 
 				getRoom(client, function(room) {
-					createCard( room, clean_data.id, clean_data.text, clean_data.x, clean_data.y, clean_data.rot, clean_data.colour);
+					createCard( room, clean_data.id, clean_data.text, clean_data.x, clean_data.y, clean_data.rot, clean_data.colour ,clean_data.desc);
 				});
 
 				message_out = {
@@ -180,12 +181,13 @@ io.sockets.on('connection', function (client) {
 			case 'editCard':
 
 				clean_data = {};
+        clean_data.desc = scrub(message.data.desc);
 				clean_data.value = scrub(message.data.value);
 				clean_data.id = scrub(message.data.id);
 
 				//send update to database
 				getRoom(client, function(room) {
-					db.cardEdit( room , clean_data.id, clean_data.value );
+					db.cardEdit(room , clean_data.id, clean_data.value, clean_data.desc);
 				});
 
 				message_out = {
@@ -466,7 +468,7 @@ function broadcastToRoom ( client, message ) {
 }
 
 //----------------CARD FUNCTIONS
-function createCard( room, id, text, x, y, rot, colour ) {
+function createCard( room, id, desc, x, y, rot, colour, text) {
 	var card = {
 		id: id,
 		colour: colour,
@@ -474,6 +476,7 @@ function createCard( room, id, text, x, y, rot, colour ) {
 		x: x,
 		y: y,
 		text: text,
+		desc: desc,
 		sticker: null
 	};
 
@@ -678,6 +681,7 @@ function importJson( client, data )
 							x:       card.x,
 							y:       card.y,
 							text:    scrub(card.text),
+							desc:    scrub(card.desc),
 							sticker: card.sticker
 						};
 						db.createCard(room, c.id, c);

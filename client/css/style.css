@@ -76,13 +76,18 @@ body {
 	xborder: solid rgba(92, 157, 181,0.5) 3px;
 }
 
-
+/* FIXME: z-index hack to fix a bug that prevent delete/details icons to be clicked
+ * but that's probably not enough
+ */
 .card-icon {
-display:none;
-position: absolute;
-top: 3%; left: 82%;
-opacity: .3;
-width: 16px; height: 16px;
+	display: none;
+	position: absolute;
+	top: 3%;
+	left: 82%;
+	opacity: .3;
+	width: 16px;
+	height: 16px;
+	z-index: 10000;
 }
 
 .card-icon-hover {

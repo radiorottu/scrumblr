@@ -109,7 +109,8 @@ function getMessage(m) {
       break;
 
     case 'editCard':
-      $("#" + data.id).children('.content:first').attr('data-text', data.value);
+      $("#" + data.id).children('.content:first').data('text', data.value);
+      $("#" + data.id).children('.content:first').data('description', data.desc);
       $("#" + data.id).children('.content:first').html(marked(data.value));
       break;
 
@@ -201,14 +202,15 @@ function drawNewCard(id, x, y, rot, colour, sticker, text, description, animatio
 <img class="card-image" src="images/' +
     colour + '-card.png">\
 	<div id="content:' + id +
-    '" class="content stickertarget droppable" data-text="">' +
+    '" class="content stickertarget droppable">' +
     marked(text) + '</div><span class="filler"></span>\
 	</div>';
 
   var card = $(h);
   card.appendTo('#board');
-  $("#" + id).children('.content:first').attr('data-text', text);
-  $("#" + id).children('.content:first').attr('data-description', 'toto');
+  var $cardContent = $("#" + id).children('.content:first');
+  $cardContent.data('text', text);
+  $cardContent.data('description', description);
 
   //@TODO
   //Draggable has a bug which prevents blur event
@@ -318,16 +320,26 @@ function drawNewCard(id, x, y, rot, colour, sticker, text, description, animatio
     }
   );
 
+  function getMarkDownData() {
+    var data;
+    if (!card.hasClass('details')) {
+      data = card.children('.content:first').data('text');
+    } else {
+      data = '# ' + card.children('.content:first').data('text') + '\n' +
+        card.children('.content:first').data('description');
+    }
+    return data;
+  }
+
   card.children('.card-details-icon').click(function () {
     if (card.hasClass('details')) {
       card.removeClass('details');
       card.find('.card-image').show();
     } else {
-      var html = card.find('.content:first').attr('data-description');
-      // card.append('<div class="details">' + html + '</div>');
       card.addClass('details');
       card.find('.card-image').hide();
     }
+    card.find('.content:first').html(marked(getMarkDownData()));
   });
 
   card.children('.content').editable(function (value, settings) {
@@ -335,7 +347,7 @@ function drawNewCard(id, x, y, rot, colour, sticker, text, description, animatio
       $("#" + id).children('.content:first').data('text', value);
       onCardChange(id, value);
     } else {
-      var lines = text.split('\n');
+      var lines = value.split('\n');
       var title = lines[0].replace(/^# /g, '').trim();
       lines.splice(0,1);
       var description = lines.join('\n');
@@ -345,14 +357,7 @@ function drawNewCard(id, x, y, rot, colour, sticker, text, description, animatio
   }, {
     type: 'textarea',
     data: function () {
-      var data;
-      if (!card.hasClass('details')) {
-        data = card.children('.content:first').data('text');
-      } else {
-        data = '# ' + card.children('.content:first').data('text') +
-          card.children('.content:first').data('description');
-      }
-      return data;
+      return getMarkDownData();
     },
     submit: 'OK',
     style: 'inherit',
@@ -467,6 +472,7 @@ function initCards(cardArray) {
       card.colour,
       card.sticker,
       card.text,
+      card.desc,
       0
     );
   }
