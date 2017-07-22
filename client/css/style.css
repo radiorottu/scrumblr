@@ -89,6 +89,34 @@ width: 16px; height: 16px;
 	opacity: .9;
 }
 
+.card-details-icon {
+	top: auto;
+	bottom: 20%;
+	left: 50% !important;
+}
+
+.details {
+	background: #fff;
+	width: 400px !important;
+	height: 500px !important;
+}
+
+.details .card-icon {
+	left: auto;
+	right: 10px;
+}
+
+.details .card-details-icon {
+	right: auto;
+	bottom: 5px;
+}
+
+.details .content {
+	width: 85%;
+	height: 500px;
+}
+
+
 .card-edit-form, .card-edit-form input, .card-edit-form textarea {
 	border: none;
 	font-size:inherit;
