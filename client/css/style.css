@@ -376,6 +376,8 @@ xopacity: .5;
 	margin: 0;
 }
 
+.ui-resizable-helper { border-right: 2px dotted #2bb282; }
+
 
 #sticker-red {
 	background-image: url('../images/stickers/sticker-red.png');

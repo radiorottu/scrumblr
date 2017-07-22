@@ -494,11 +494,17 @@ function drawNewColumn(columnName) {
     cls = "col first";
   }
 
-  $('#icon-col').before('<td class="' + cls +
-    '" width="10%" style="display:none"><h2 id="col-' + (totalcolumns + 1) +
+  var $newColumn = $('<td class="' + cls +
+    '" style="display:none"><h2 id="col-' + (totalcolumns + 1) +
     '" class="editable">' + columnName + '</h2></td>');
+  $('#icon-col').before($newColumn);
 
-  $('.editable').editable(function (value, settings) {
+  $newColumn.resizable({
+    handles: "e",
+    helper: "ui-resizable-helper"
+  });
+
+  $('.editable', $newColumn).editable(function (value, settings) {
     onColumnChange(this.id, value);
     return (value);
   }, {
