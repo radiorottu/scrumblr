@@ -1,8 +1,5 @@
 extends layout
 
-cardColors = ["this": "something", "that": "something else", "those": "more stuff", "these": "also included"}
-
-
 block body
     - if (locals.demo)
         div.notice-bar this is a demo board. to make a private board, go to <a href="/demo">/demo</a>
@@ -20,14 +17,8 @@ block body
 
 
         div.stickers
-            div.sticker#sticker-red
-            div.sticker#sticker-blue
-            div.sticker#sticker-yellow
-            div.sticker#sticker-green
-            div.sticker#sticker-pink
-            div.sticker#sticker-lightblue
-            div.sticker#sticker-orange
-            div.sticker#sticker-purple
+            each color in ['red', 'blue', 'yellow', 'green', 'pink', 'lightblue', 'orange', 'purple']
+                div(id="sticker-#{color}").sticker
             //div.sticker#sticker-silverstar
             //div#addsticker
             div.sticker#nosticker
