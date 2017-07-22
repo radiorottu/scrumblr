@@ -392,27 +392,25 @@ function moveCard(card, position) {
   }, 500);
 }
 
-function addSticker(cardId, stickerId) {
+function addSticker(cardId, stickerIds) {
 
-  stickerContainer = $('#' + cardId + ' .filler');
+  var $stickerContainer = $('#' + cardId + ' .filler');
 
-  if (stickerId === "nosticker") {
-    stickerContainer.html("");
+  if (stickerIds === "nosticker") {
+    $stickerContainer.html("");
     return;
   }
 
-
-  if (Array.isArray(stickerId)) {
-    for (var i in stickerId) {
-      stickerContainer.prepend('<img src="images/stickers/' + stickerId[i] +
-        '.png">');
-    }
-  } else {
-    if (stickerContainer.html().indexOf(stickerId) < 0)
-      stickerContainer.prepend('<img src="images/stickers/' + stickerId +
-        '.png">');
+  if (!Array.isArray(stickerIds)) {
+    stickerIds = [ stickerIds ];
   }
 
+  for (var i in stickerIds) {
+    var stickerID = stickerIds[i];
+    if ($stickerContainer.find('.' + stickerID).length === 0) {
+      $stickerContainer.prepend($('#' + stickerID).clone().removeAttr('style').addClass(stickerID));
+    }
+  }
 }
 
 

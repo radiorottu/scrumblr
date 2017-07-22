@@ -352,6 +352,10 @@ xopacity: .5;
 	clip-path: circle(16px at center);
 }
 
+.filler .user {
+	margin-bottom: -15px;
+}
+
 #sticker-user1 {
 	background-image: url('../images/stickers/sticker-user1.png');
 }
