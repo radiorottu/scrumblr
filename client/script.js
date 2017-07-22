@@ -326,7 +326,7 @@ function drawNewCard(id, x, y, rot, colour, sticker, text, description, animatio
       data = card.children('.content:first').data('text');
     } else {
       data = '# ' + card.children('.content:first').data('text') + '\n' +
-        card.children('.content:first').data('description');
+        card.children('.content:first').data('description').replace(/\n/g, '\n');
     }
     return data;
   }
@@ -339,7 +339,8 @@ function drawNewCard(id, x, y, rot, colour, sticker, text, description, animatio
       card.addClass('details');
       card.find('.card-image').hide();
     }
-    card.find('.content:first').html(marked(getMarkDownData()));
+    var htmlData = marked(getMarkDownData());
+    card.find('.content:first').html(htmlData);
   });
 
   card.children('.content').editable(function (value, settings) {
