@@ -325,8 +325,9 @@ function drawNewCard(id, x, y, rot, colour, sticker, text, description, animatio
     if (!card.hasClass('details')) {
       data = card.children('.content:first').data('text');
     } else {
+      var desc = card.children('.content:first').data('description');
       data = '# ' + card.children('.content:first').data('text') + '\n' +
-        card.children('.content:first').data('description').replace(/\n/g, '\n');
+        (desc ? desc.replace(/\n/g, '\n') : '');
     }
     return data;
   }
@@ -352,6 +353,8 @@ function drawNewCard(id, x, y, rot, colour, sticker, text, description, animatio
       var title = lines[0].replace(/^# /g, '').trim();
       lines.splice(0,1);
       var description = lines.join('\n');
+      $("#" + id).children('.content:first').data('text', title);
+      $("#" + id).children('.content:first').data('description', description);
       onCardChange(id, title, description);
     }
     return (marked(value));
