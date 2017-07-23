@@ -106,7 +106,7 @@ function scrub( text ) {
 io.sockets.on('connection', function (client) {
 
 	client.on('message', function( message ){
-		//console.log(message.action + " -- " + sys.inspect(message.data) );
+		console.log(message.action + " -- " + sys.inspect(message.data) );
 
 		var clean_data = {};
 		var clean_message = {};
@@ -236,21 +236,18 @@ io.sockets.on('connection', function (client) {
 
 			case 'updateColumns':
 				var columns = message.data;
+				console.log("updateColumns() " + JSON.stringify(columns));
 
 				if (!(columns instanceof Array))
 					break;
 
-				var clean_columns = [];
+				// FIXME smoreau: removed scrub() call, is it safe ?
 
-				for (var i in columns)
-				{
-					clean_columns[i] = scrub( columns[i] );
-				}
 				getRoom( client, function(room) {
-					db.setColumns( room, clean_columns );
+					db.setColumns( room, columns );
 				});
 
-				broadcastToRoom( client, { action: 'updateColumns', data: clean_columns } );
+				broadcastToRoom( client, { action: 'updateColumns', data: columns } );
 
 				break;
 
@@ -303,6 +300,17 @@ io.sockets.on('connection', function (client) {
 
 				broadcastToRoom( client, { action: 'setBoardSize', data: size } );
 				break;
+
+      case 'setColumnSize':
+        var width = scrub(message.data.width);
+        var columnID = scrub(message.data.columnID);
+
+        getRoom(client, function(room) {
+          db.setColumnSize(room, columnID, width);
+        });
+
+        broadcastToRoom( client, { action: 'setColumnSize', data: message.data});
+        break;
 
 			case 'exportTxt':
 				exportBoard( 'txt', client, message.data );

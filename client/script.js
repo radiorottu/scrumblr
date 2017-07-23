@@ -150,6 +150,11 @@ function getMessage(m) {
       resizeBoard(message.data);
       break;
 
+    case 'setColumnSize':
+      // FIXME smoreau: add new method resizeColumn
+      resizeColumn(message.data);
+      break;
+
     case 'export':
       download(message.data.filename, message.data.text);
       break;
@@ -488,7 +493,7 @@ function initCards(cardArray) {
 // cols
 //----------------------------------
 
-function drawNewColumn(columnName) {
+function drawNewColumn(column, numberOfColumns) {
   var cls = "col";
   if (totalcolumns === 0) {
     cls = "col first";
@@ -496,13 +501,17 @@ function drawNewColumn(columnName) {
 
   var $newColumn = $('<td class="' + cls +
     '" style="display:none"><h2 id="col-' + (totalcolumns + 1) +
-    '" class="editable">' + columnName + '</h2></td>');
+    '" class="editable">' + column.title + '</h2></td>');
   $('#icon-col').before($newColumn);
 
-  $newColumn.resizable({
-    handles: "e",
-    helper: "ui-resizable-helper"
-  });
+  if (totalcolumns + 1 != numberOfColumns) {
+    $newColumn.width(column.width);
+
+    $newColumn.resizable({
+      handles: "e",
+      helper: "ui-resizable-helper"
+    });
+  }
 
   $('.editable', $newColumn).editable(function (value, settings) {
     onColumnChange(this.id, value);
@@ -535,11 +544,10 @@ function onColumnChange(id, text) {
     //get ID of current column we are traversing over
     var thisID = $(this).children("h2").attr('id');
 
-    if (id == thisID) {
-      names.push(text);
-    } else {
-      names.push($(this).text());
+    if (id != thisID) {
+      text = $(this).text();
     }
+    names.push({ title: text, width: 150});
 
   });
 
@@ -552,6 +560,8 @@ function displayRemoveColumn() {
   $('.col:last').fadeOut(150,
     function () {
       $(this).remove();
+      // FIXME smoreau: verify last col is properly deleted here, or remove({ put it here })
+      $(".col:last").resizable('destroy');
     }
   );
 
@@ -561,11 +571,17 @@ function displayRemoveColumn() {
 function createColumn(name) {
   if (totalcolumns >= 8) return false;
 
-  drawNewColumn(name);
-  columns.push(name);
+  var newColumn = { title: name }
+
+  $(".col:last").resizable({
+    handles: "e",
+    helper: "ui-resizable-helper"
+  });
+
+  drawNewColumn(newColumn, columns.length + 1);
+  columns.push(newColumn);
 
   var action = "updateColumns";
-
   var data = columns;
 
   sendAction(action, data);
@@ -608,9 +624,7 @@ function initColumns(columnArray) {
   for (var i in columnArray) {
     column = columnArray[i];
 
-    drawNewColumn(
-      column
-    );
+    drawNewColumn(column, columnArray.length);
   }
 }
 
@@ -701,10 +715,24 @@ function boardResizeHappened(event, ui) {
   sendAction('setBoardSize', newsize);
 }
 
+function columnResizeHappened(event, ui) {
+  var newSize = ui.size;
+  var columnID = $(ui.element).find('h2').attr('id').replace(/col-/g, '');
+
+  sendAction('setColumnSize', { columnID: parseInt(columnID), width: newSize.width });
+}
+
 function resizeBoard(size) {
   $(".board-outline").animate({
     height: size.height,
     width: size.width
+  });
+}
+
+function resizeColumn(column) {
+  var $board = $(".board-outline");
+  $board.find('h2#col-' + (column.columnID)).parent().animate({
+    width: column.width
   });
 }
 
@@ -957,7 +985,11 @@ $(function () {
       adjustCard(offsets, false);
     });
     $(".board-outline").bind("resizestop", function (event, ui) {
-      boardResizeHappened(event, ui);
+      if ($(ui.element).hasClass('board-outline')) {
+        boardResizeHappened(event, ui);
+      } else {
+        columnResizeHappened(event, ui);
+      }
       adjustCard(offsets, true);
     });
   })();
