@@ -187,10 +187,10 @@ $(document).bind('keyup', function (event) {
   keyTrap = event.which;
 });
 
-function drawNewCard(id, x, y, rot, colour, sticker, text, description, animationspeed) {
+function drawNewCard(id, x, y, rot, colour, text, description, sticker, animationspeed) {
   //cards[id] = {id: id, text: text, x: x, y: y, rot: rot, colour: colour};
 
-  if (typeof text === 'undefined')
+  if (typeof text === 'undefined' || null === text)
     text = '';
 
   if (typeof description === 'undefined')
@@ -377,7 +377,7 @@ function drawNewCard(id, x, y, rot, colour, sticker, text, description, animatio
   });
 
   //add applicable sticker
-  if (sticker !== null)
+  if (typeof sticker === 'undefined')
     addSticker(id, sticker);
 }
 
@@ -477,9 +477,9 @@ function initCards(cardArray) {
       card.y,
       card.rot,
       card.colour,
-      card.sticker,
       card.text,
       card.desc,
+      card.sticker,
       0
     );
   }
