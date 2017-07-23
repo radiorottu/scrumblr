@@ -533,22 +533,16 @@ function drawNewColumn(column, numberOfColumns) {
   totalcolumns++;
 }
 
-function onColumnChange(id, text) {
+function onColumnChange(id, columnName) {
   var names = Array();
 
   //console.log(id + " " + text );
 
   //Get the names of all the columns right from the DOM
   $('.col').each(function () {
-
     //get ID of current column we are traversing over
     var thisID = $(this).children("h2").attr('id');
-
-    if (id != thisID) {
-      text = $(this).text();
-    }
-    names.push({ title: text, width: 150});
-
+    names.push({ title: (id !== thisID ? $(this).text() : columnName), width: $(this).width()});
   });
 
   updateColumns(names);
