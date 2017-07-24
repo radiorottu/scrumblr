@@ -377,7 +377,7 @@ function drawNewCard(id, x, y, rot, colour, text, description, sticker, animatio
   });
 
   //add applicable sticker
-  if (typeof sticker === 'undefined')
+  if (typeof sticker !== 'undefined')
     addSticker(id, sticker);
 }
 

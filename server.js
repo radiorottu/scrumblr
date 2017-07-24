@@ -285,7 +285,7 @@ io.sockets.on('connection', function (client) {
 					db.addSticker( room , cardId, stickerId );
 				});
 
-				broadcastToRoom( client, { action: 'addSticker', data: { cardId: cardId, stickerId: stickerId }});
+				broadcastToRoom( client, { action: 'addSticker', data: message.data});
 				break;
 
 			case 'setBoardSize':
