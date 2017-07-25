@@ -476,7 +476,7 @@ function broadcastToRoom ( client, message ) {
 }
 
 //----------------CARD FUNCTIONS
-function createCard( room, id, desc, x, y, rot, colour, text) {
+function createCard( room, id, text, x, y, rot, colour, desc) {
 	var card = {
 		id: id,
 		colour: colour,
