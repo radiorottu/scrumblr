@@ -83,10 +83,11 @@ body {
 	display: none;
 	position: absolute;
 	top: 3%;
-	left: 82%;
+	right: 25px;
 	opacity: .3;
-	width: 16px;
-	height: 16px;
+	width: 22px;
+	height: 22px;
+	font-size: 22px;
 	z-index: 10000;
 }
 
@@ -95,9 +96,7 @@ body {
 }
 
 .card-details-icon {
-	top: auto;
-	bottom: 20%;
-	left: 50% !important;
+	right: 55px;
 }
 
 .details {
@@ -107,13 +106,9 @@ body {
 }
 
 .details .card-icon {
-	left: auto;
-	right: 10px;
 }
 
 .details .card-details-icon {
-	right: auto;
-	bottom: 5px;
 }
 
 .details .content {
@@ -335,7 +330,7 @@ xopacity: .5;
 
 .sticker {
 	padding-top:  0px;
-	padding-left: 2px;
+	margin-left: 2px;
 	xz-index:10;
 	display: inline-block;
 	width: 11px;

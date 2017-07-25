@@ -198,24 +198,23 @@ function drawNewCard(id, x, y, rot, colour, text, description, sticker, animatio
 
   // FIXME: change details icon
 
-  var h = '<div id="' + id + '" class="card ' + colour +
-    ' draggable" style="-webkit-transform:rotate(' + rot +
+  var h = '<div id="' + id + '" class="card ' + colour + ' draggable" style="-webkit-transform:rotate(' + rot +
     'deg);\
 ">\
-<img src="images/icons/token/Xion.png" class="card-icon delete-card-icon" />\
-<img src="images/icons/token/Xion.png" class="card-icon card-details-icon" />\
-<img class="card-image" src="images/' +
-    colour + '-card.png">\
-	<div id="content:' + id +
-    '" class="content stickertarget droppable">' +
-    marked(text) + '</div><span class="filler"></span>\
-	</div>';
+<i class="fa fa-window-close card-icon delete-card-icon" aria-hidden="true"></i>\
+<i class="fa fa-window-maximize card-icon card-details-icon" aria-hidden="true"></i>\
+<img class="card-image" src="images/' + colour + '-card.png">\
+  <div id="content:' + id + '" class="content stickertarget droppable">' + marked(text) + '</div>\
+  <span class="filler"></span>\
+  </div>';
 
   var card = $(h);
   card.appendTo('#board');
   var $cardContent = $("#" + id).children('.content:first');
   $cardContent.data('text', text);
   $cardContent.data('description', description);
+
+  var $detailsButton = $("#" + id).find('.card-details-icon');
 
   //@TODO
   //Draggable has a bug which prevents blur event
@@ -341,9 +340,11 @@ function drawNewCard(id, x, y, rot, colour, text, description, sticker, animatio
     if (card.hasClass('details')) {
       card.removeClass('details');
       card.find('.card-image').show();
+      $detailsButton.removeClass('fa-window-restore').addClass('fa-window-maximize');
     } else {
       card.addClass('details');
       card.find('.card-image').hide();
+      $detailsButton.removeClass('fa-window-maximize').addClass('fa-window-restore');
     }
     var htmlData = marked(getMarkDownData());
     card.find('.content:first').html(htmlData);
