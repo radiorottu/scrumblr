@@ -151,7 +151,6 @@ function getMessage(m) {
       break;
 
     case 'setColumnSize':
-      // FIXME smoreau: add new method resizeColumn
       resizeColumn(message.data);
       break;
 
@@ -187,6 +186,28 @@ $(document).bind('keyup', function (event) {
   keyTrap = event.which;
 });
 
+function createNewScrumBoard() {
+  var $board = $('#board');
+  var width = $board.width();
+  var todoColumnWidth = 70*(width - 200*3)/100;
+
+  var columns = [
+    { title: 'Story', width: 200 },
+    { title: 'Todo', width: todoColumnWidth },
+    { title: 'In Progress', width: 200 },
+    { title: 'In Review', width: 200 },
+    { title: 'Done' }
+  ];
+  initColumns(columns);
+  sendAction('updateColumns', columns);
+
+  createCard(0, 100, 'yellow', 'a useful feature for user');
+  createCard(200, 100, 'blue', 'an atomic task to do');
+  createCard(200 + todoColumnWidth, 100, 'blue', 'an atomic task being done');
+  createCard(200 + todoColumnWidth + 200, 100, 'blue', 'an atomic task reviewed by others and/or being tested');
+  createCard(200 + todoColumnWidth + 2*200, 100, 'blue', 'an atomic task done done');
+}
+
 function drawNewCard(id, x, y, rot, colour, text, description, sticker, animationspeed) {
   //cards[id] = {id: id, text: text, x: x, y: y, rot: rot, colour: colour};
 
@@ -195,8 +216,6 @@ function drawNewCard(id, x, y, rot, colour, text, description, sticker, animatio
 
   if (typeof description === 'undefined')
     description = '';
-
-  // FIXME: change details icon
 
   var h = '<div id="' + id + '" class="card ' + colour + ' draggable" style="-webkit-transform:rotate(' + rot +
     'deg);\
@@ -423,20 +442,25 @@ function addSticker(cardId, stickerIds) {
 //----------------------------------
 // cards
 //----------------------------------
-function createCard(id, x, y, rot, colour, text, description) {
+function createCard(x, y, colour, text, description) {
   if (typeof text === 'undefined')
     text = '';
 
-  drawNewCard(id, x, y, rot, colour, text, description);
+  var rotation = Math.random() * 10 - 5; //add a bit of random rotation (+/- 10deg)
+  // FIXME: get uniq id
+  uniqueID = Math.round(Math.random() * 99999999); //is this big enough to assure uniqueness?
+  //alert(uniqueID);
+
+  drawNewCard(uniqueID, x, y, rotation, colour, text, description);
 
   var action = "createCard";
   var data = {
-    id: id,
+    id: uniqueID,
     text: text,
     desc: description,
     x: x,
     y: y,
-    rot: rot,
+    rot: rotation,
     colour: colour
   };
 
@@ -852,20 +876,13 @@ $(function () {
 
   //setTimeout($.unblockUI, 2000);
 
+  $("#create-card").click(function () {
+    createCard(58, $('#create-card').height(), getCardColour());
+  });
 
-  $("#create-card")
-    .click(function () {
-      var rotation = Math.random() * 10 - 5; //add a bit of random rotation (+/- 10deg)
-      // FIXME: get uniq id
-      uniqueID = Math.round(Math.random() * 99999999); //is this big enough to assure uniqueness?
-      //alert(uniqueID);
-      createCard(
-        'card' + uniqueID,
-        58, $('#create-card').height(),
-        rotation,
-        getCardColour());
-    });
-
+  $("#create-board").click(function () {
+    createNewScrumBoard();
+  });
 
   // Style changer
   $("#smallify").click(function () {

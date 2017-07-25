@@ -9,6 +9,7 @@ block body
 
     div.main-tool-bar
         div.buttons
+            i#create-board.fa.fa-table.fa-2x.bottom-icon
             select(id="card-color", name="card-color")
                 each value in [['random', 'Random'], ['yellow', 'Story'], ['green', 'Middleware'], ['blue', 'Task'], ['white', 'White']]
                     option(value="#{value[0]}") #{value[1]}
