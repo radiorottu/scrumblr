@@ -389,12 +389,10 @@ function initClient ( client )
 
 
 		db.getRevisions( room, function (revisions) {
-			client.json.send(
-				{
-					action: 'initRevisions',
-					data: (revisions !== null) ? Object.keys(revisions) : new Array()
-				}
-			);
+			client.json.send({
+        action: 'initRevisions',
+        data: (revisions !== null) ? Object.keys(revisions) : []
+      });
 		});
 
 		db.getTheme( room, function(theme) {
@@ -538,101 +536,102 @@ function cleanAndInitializeDemoRoom()
 }
 
 // Export board in txt or csv
-function exportBoard( format, client, data )
-{
-	var result = new Array();
-	getRoom(client, function(room) {
-		db.getAllCards( room , function (cards) {
-			db.getAllColumns ( room, function (columns) {
-				var text = new Array();
-				var cols = {};
-				if (columns.length > 0) {
-					for (var i = 0; i < columns.length; i++) {
-						cols[columns[i]] = new Array();
-						for (var j = 0; j < cards.length; j++) {
-							if (i === 0) {
-								if (cards[j]['x'] < (i + 1) * data) {
-									cols[columns[i]].push(cards[j]);
-								}
-							} else if (i + 1 === columns.length) {
-								if (cards[j]['x'] >= i * data) {
-									cols[columns[i]].push(cards[j]);
-								}
-							} else if (cards[j]['x'] >= i * data && cards[j]['x'] < (i + 1) * data) {
-								cols[columns[i]].push(cards[j]);
-							}
-						}
-						cols[columns[i]].sort(function(a, b) {
-							if (a['y'] === b['y']) {
-								return (a['x'] - b['x']);
-							} else {
-								return a['y'] - b['y'];
-							}
-						});
-					}
-					if (format === 'txt') {
-						for (var i = 0; i < columns.length; i++) {
-							if (i === 0) {
-								text.push("# "+columns[i]);
-							} else {
-								text.push("\n# "+columns[i]);
-							}
-							for (var j = 0; j < cols[columns[i]].length; j++) {
-								text.push('- '+cols[columns[i]][j]['text']);
-							}
-						}
-					} else if (format === 'csv') {
-						var max = 0;
-						var line = new Array();
-						for (var i = 0; i < columns.length; i++) {
-							if (cols[columns[i]].length > max) {
-								max = cols[columns[i]].length;
-							}
-							line.push('"'+columns[i].replace(/"/g,'""')+'"');
-						}
-						text.push(line.join(','));
-						for (var j = 0; j < max; j++) {
-							line = new Array();
-							for (var i = 0; i < columns.length; i++) {
-								var val = (cols[columns[i]][j] !== undefined) ? cols[columns[i]][j]['text'].replace(/"/g,'""') : '';
-								line.push('"'+val+'"');
-							}
-							text.push(line.join(','));
-						}
-					}
-				} else {
-					for (var j = 0; j < cards.length; j++) {
-						if (format === 'txt') {
-							text.push('- '+cards[j]['text']);
-						} else if (format === 'csv') {
-							text.push('"'+cards[j]['text'].replace(/"/g,'""')+'"\n');
-						}
-					}
-				}
-				var result;
-				if (format === 'txt' || format === 'csv') {
-					result = text.join("\n");
-				} else if (format === 'json') {
-					result = JSON.stringify(cols);
-				}
-				client.json.send(
-					{
-						action: 'export',
-						data: {
-							filename: room.replace('/', '')+'.'+format,
-							text: result
-						}
-					}
-				);
-			});
-		});
-	});
+function exportBoard(format, client, data) {
+  var result = "", i, j, card;
+  getRoom(client, function (room) {
+    db.getAllCards(room, function (cards) {
+      db.getAllColumns(room, function (columns) {
+        var cols = {};
+        if (columns.length > 0) {
+          var column;
+          for (i in columns) {
+            column = columns[i];
+            cols[column.title] = [];
+          }
+
+          for (j in cards) {
+            card = cards[j];
+            var currentWidth = 0;
+            for (i = 0; i < columns.length; i++) {
+              column = columns[i];
+              if (i === columns.length - 1 || currentWidth <= card.x && card.x < currentWidth + column.width)
+                break;
+              currentWidth += column.width;
+            }
+            cols[column.title].push(card);
+            cols[column.title].sort(function (a, b) {
+              if (a['y'] === b['y']) {
+                return (a['x'] - b['x']);
+              } else {
+                return a['y'] - b['y'];
+              }
+            });
+          }
+          switch (format) {
+            case "txt":
+              for (i = 0; i < columns.length; i++) {
+                var columnTitle = columns[i].title;
+                result += "# " + columnTitle + '\n';
+
+                for (var j = 0; j < cols[columnTitle].length; j++) {
+                  result += '- ' + cols[columnTitle][j].text + '\n';
+                }
+                result += '\n';
+              }
+              break;
+
+            case "csv":
+              var numberOfRows = 0;
+              var line = [];
+              for (i = 0; i < columns.length; i++) {
+                var columnTitle = columns[i].title;
+                line.push('"' + columnTitle.replace(/"/g, '""') + '"');
+
+                for (j = 0; j < cols[columnTitle].length; j++) {
+                  numberOfRows = Math.max(cols[columnTitle].length, numberOfRows);
+                }
+              }
+              result += line.join(',') + '\n';
+              for (j = 0; j < numberOfRows; j++) {
+                line = [];
+                for (i = 0; i < columns.length; i++) {
+                  var columnTitle = columns[i].title;
+                  var val = (cols[columnTitle][j] !== undefined) ? cols[columnTitle][j].text.replace(/"/g, '""') : '';
+                  line.push('"' + val + '"');
+                }
+                result += line.join(',') + '\n';
+              }
+              break;
+          }
+        } else {
+          for (j = 0; j < cards.length; j++) {
+            card = cards[j];
+            if (format === 'txt') {
+              result += '- ' + card.text + '\n';
+            } else if (format === 'csv') {
+              result += '"' + card.text.replace(/"/g, '""') + '"\n';
+            }
+          }
+        }
+
+        console.log("Exporting data to " + format + ": " + result);
+
+        client.json.send({
+          action: 'export',
+          data: {
+            filename: room.replace('/', '') + '.' + format,
+            text: result
+          }
+        });
+      });
+    });
+  });
 }
 
 // Export board in json, suitable for import
 function exportJson( client, data )
 {
-	var result = new Array();
+	var result = [];
 	getRoom(client, function(room) {
 		db.getAllCards( room , function (cards) {
 			db.getAllColumns ( room, function (columns) {
@@ -673,7 +672,7 @@ function importJson( client, data )
 				}
 
 				cards      = data.cards;
-				var cards2 = new Array();
+				var cards2 = [];
 				for (var i = 0; i < cards.length; i++) {
 					var card = cards[i];
 					if (card.id         !== undefined && card.colour !== undefined
@@ -705,15 +704,10 @@ function importJson( client, data )
 				}
 
 				columns      = data.columns;
-				var columns2 = new Array();
-				for (var i = 0; i < columns.length; i++) {
-					var column = scrub(columns[i]);
-					if (typeof(column) === 'string') {
-						db.createColumn(room, column);
-						columns2.push(column);
-					}
-				}
-				msg = { action: 'initColumns', data: columns2 };
+				// FIXME smoreau: no need to sanitize data, right ?
+        db.setColumns(room, columns);
+
+				msg = { action: 'initColumns', data: columns };
 				broadcastToRoom(client, msg);
 				client.json.send(msg);
 			});
@@ -741,7 +735,7 @@ function importJson( client, data )
 
 function createRevision( client, data )
 {
-	var result = new Array();
+	var result = [];
 	getRoom(client, function(room) {
 		db.getAllCards( room , function (cards) {
 			db.getAllColumns ( room, function (columns) {

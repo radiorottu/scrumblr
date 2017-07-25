@@ -9,15 +9,29 @@ block body
 
     div.main-tool-bar
         div.buttons
-            i#create-board.fa.fa-table.fa-2x.bottom-icon
             select(id="card-color", name="card-color")
                 each value in [['random', 'Random'], ['yellow', 'Story'], ['green', 'Middleware'], ['blue', 'Task'], ['white', 'White']]
                     option(value="#{value[0]}") #{value[1]}
             i#create-card.fa.fa-plus-circle.fa-2x.bottom-icon
             i#smallify.fa.fa-expand.fa-2x.bottom-icon
+            span.extra-buttons
+                i#create-board.fa.fa-table.fa-2x.bottom-icon
+                i#import-json.fa.fa-cloud-upload.fa-2x.bottom-icon
+                span.import-form
+                    label(for="import-input") JSON file to import
+                    input(type="file")#import-input
+                    button#import-file Import
 
+                i#export-json.fa.fa-cloud-download.fa-2x.bottom-icon
+                div#export-txt.fa.export
+                    i.fa.fa-cloud-download.fa-2x.bottom-icon
+                    i.export-type txt
+                div#export-csv.fa.export
+                    i.fa.fa-cloud-download.fa-2x.bottom-icon
+                    i.export-type csv
+                i#create-revision.fa.fa-cubes.fa-2x.bottom-icon
 
-        div.stickers
+    div.stickers
             div.sticker.user#sticker-user1
             div.sticker.user#sticker-user2
             each color in ['red', 'blue', 'yellow', 'green', 'pink', 'lightblue', 'orange', 'purple']
@@ -55,22 +69,8 @@ block body
         span.you-text (you)
         ul#names-ul
 
-    div.export
-        h3 Export board
-        button#export-txt Text format
-        button#export-csv CSV format
-        button#export-json JSON format (for import in Scrumblr)
-
-    div.import
-        h3 Import board
-        div
-            label(for="import-input") JSON file to import
-            input(type="file")#import-input
-            button#import-file Import
-
     div.revisions
         h3 Revisions
-        button#create-revision Create a revision
         div
             ul#revisions-list
 

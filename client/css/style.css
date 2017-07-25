@@ -695,3 +695,13 @@ img {
 #revisions-list li img {
     margin-left: 10px;
 }
+
+
+.export {
+    position: relative;
+}
+.export-type {
+    position: absolute;
+    left: 10px;
+    bottom: 0px;
+}
