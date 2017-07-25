@@ -15,7 +15,6 @@ var ga = require('./config.js').googleanalytics;
  LOCAL INCLUDES
 **************/
 var	rooms	= require('./lib/rooms.js');
-var	data	= require('./lib/data.js').db;
 
 /**************
  GLOBALS
@@ -526,7 +525,6 @@ function cleanAndInitializeDemoRoom()
 		db.createColumn( '/demo', 'Review' );
 		db.createColumn( '/demo', 'Complete' );
 
-
 		createCard('/demo', 'card1', 'Hello this is fun', roundRand(600), roundRand(300), Math.random() * 10 - 5, 'yellow');
 		createCard('/demo', 'card2', 'Hello this is a new story.', roundRand(600), roundRand(300), Math.random() * 10 - 5, 'white');
 		createCard('/demo', 'card3', '.', roundRand(600), roundRand(300), Math.random() * 10 - 5, 'blue');
@@ -817,6 +815,8 @@ function exportRevision ( client, timestamp )
  SETUP DATABASE ON FIRST RUN
 **************/
 // (runs only once on startup)
-var db = new data(function() {
-	cleanAndInitializeDemoRoom();
-});
+var conf = require('./config.js').database;
+
+/** @type RedisDatabase|MongoDBDatabase db */
+var db = require('./lib/data/' + conf.type + '.js').db;
+db.init(cleanAndInitializeDemoRoom);
