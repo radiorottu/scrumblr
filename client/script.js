@@ -447,15 +447,8 @@ function createCard(x, y, colour, text, description) {
     text = '';
 
   var rotation = Math.random() * 10 - 5; //add a bit of random rotation (+/- 10deg)
-  // FIXME: get uniq id
-  uniqueID = Math.round(Math.random() * 99999999); //is this big enough to assure uniqueness?
-  //alert(uniqueID);
-
-  drawNewCard(uniqueID, x, y, rotation, colour, text, description);
-
   var action = "createCard";
   var data = {
-    id: uniqueID,
     text: text,
     desc: description,
     x: x,
@@ -465,7 +458,6 @@ function createCard(x, y, colour, text, description) {
   };
 
   sendAction(action, data);
-
 }
 
 function getCardColour() {
