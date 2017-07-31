@@ -658,6 +658,7 @@ function importJson(client, data) {
 
         cards = data.cards;
         var cards2 = [];
+        var promises = [];
         for (var i = 0; i < cards.length; i++) {
           var card = cards[i];
           if (card.id !== undefined && card.colour !== undefined
@@ -674,14 +675,24 @@ function importJson(client, data) {
               desc: scrub(card.desc),
               sticker: card.sticker
             };
-            db.createCard(room, c, function (cardWithLocalId) {
-              cards2.push(cardWithLocalId);
+            var promise = new Promise(function (resolve, reject) {
+              db.createCard(room, c, function (cardWithLocalId) {
+                console.log("Added card " + c.id);
+                cards2.push(cardWithLocalId);
+                resolve();
+              });
             });
+
+            promises.push(promise);
           }
         }
-        var msg = {action: 'initCards', data: cards2};
-        broadcastToRoom(client, msg);
-        client.json.send(msg);
+
+        Promise.all(promises).then(function() {
+          console.log("Broadcasting cards " + cards2.length);
+          var msg = {action: 'initCards', data: cards2};
+          broadcastToRoom(client, msg);
+          client.json.send(msg);
+        });
       });
 
       db.getAllColumns(room, function (columns) {
