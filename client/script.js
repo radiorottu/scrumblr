@@ -651,6 +651,14 @@ function initColumns(columnArray) {
 function changeThemeTo(theme) {
   currentTheme = theme;
   $("link[title=cardsize]").attr("href", "css/" + theme + ".css");
+
+  var icons = {
+    'smallcards': 'fa-search-plus',
+    'bigcards': 'fa-search-minus'
+  };
+  var $icon = $("#smallify");
+  $.map(icons, function(v) { $icon.removeClass(v); });
+  $icon.addClass(icons[theme]);
 }
 
 
