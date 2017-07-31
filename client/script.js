@@ -904,6 +904,21 @@ $(function () {
   });
 
 
+  $('#show-extra-buttons').click(function() {
+    $('#show-extra-buttons').hide();
+    $('.extra-buttons').fadeIn(200);
+  });
+
+  $('#import-json').click(function() {
+    $('.import-form').fadeIn(200, function () {
+      $('#cancel-import-file').click(function () {
+        $('.import-form').hide();
+      });
+    });
+  });
+
+
+
   $('#icon-col').hover(
     function () {
       $('.col-icon').fadeIn(10);

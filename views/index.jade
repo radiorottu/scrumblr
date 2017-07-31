@@ -7,29 +7,31 @@ block body
     //div.config
     //	i.fa.fa-cog.fa-lg.faded-icon
 
-    div.main-tool-bar
+    div.fa.main-tool-bar
         div.buttons
-            select(id="card-color", name="card-color")
+            select(id="card-color", name="card-color", title="Choose the post-it type (color)")
                 each value in [['random', 'Random'], ['yellow', 'Story'], ['green', 'Middleware'], ['blue', 'Task'], ['white', 'White']]
                     option(value="#{value[0]}") #{value[1]}
-            i#create-card.fa.fa-plus-circle.fa-2x.bottom-icon
-            i#smallify.fa.fa-expand.fa-2x.bottom-icon
-            span.extra-buttons
-                i#create-board.fa.fa-table.fa-2x.bottom-icon
-                i#import-json.fa.fa-cloud-upload.fa-2x.bottom-icon
+            i(title="Create new post-it")#create-card.fa.fa-plus-circle.fa-2x.bottom-icon
+            i(title="Toggle large/small view")#smallify.fa.fa-expand.fa-2x.bottom-icon
+            i(title="Show advanced buttons")#show-extra-buttons.fa.fa-ellipsis-h.fa-2x.bottom-icon
+            span.fa.extra-buttons
+                i(title="Create new default kanban board")#create-board.fa.fa-table.fa-2x.bottom-icon
+                i(title="Import board from JSON file")#import-json.fa.fa-cloud-upload.fa-2x.bottom-icon
                 span.import-form
                     label(for="import-input") JSON file to import
                     input(type="file")#import-input
-                    button#import-file Import
+                    button(title="Import selected file to load existing board")#import-file Import
+                    button(title="Cancel importing, and hide fields related to import feature")#cancel-import-file Cancel
 
-                i#export-json.fa.fa-cloud-download.fa-2x.bottom-icon
-                div#export-txt.fa.export
+                i(title="Export current board to JSON file")#export-json.fa.fa-cloud-download.fa-2x.bottom-icon
+                div(title="Export current board to text file")#export-txt.fa.export
                     i.fa.fa-cloud-download.fa-2x.bottom-icon
                     i.export-type txt
-                div#export-csv.fa.export
+                div(title="Export current board to CSV file")#export-csv.fa.export
                     i.fa.fa-cloud-download.fa-2x.bottom-icon
                     i.export-type csv
-                i#create-revision.fa.fa-cubes.fa-2x.bottom-icon
+                i(title="Create new revision of current board")#create-revision.fa.fa-cubes.fa-2x.bottom-icon
 
     div.stickers
             div.sticker.user#sticker-user1

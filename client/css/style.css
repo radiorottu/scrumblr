@@ -225,6 +225,16 @@ h2 {
 	opacity: .5;
 }
 
+.extra-buttons {
+	display: none;
+}
+
+.import-form {
+	display: none;
+	padding: 5px;
+	border: 1px solid cornflowerblue;
+}
+
 #config-dropdown {
 	border: solid #666 5px;
 	width: 200px;
