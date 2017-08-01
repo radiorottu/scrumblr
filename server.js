@@ -128,11 +128,6 @@ io.sockets.on('connection', function (client) {
     if (!message.action) return;
 
     switch (message.action) {
-      case 'initializeMe':
-        var optionalParameters = message.data;
-        initClient(client, optionalParameters);
-        break;
-
       case 'joinRoom':
         var url = parse({ url: message.data });
         var room = url.pathname;
@@ -140,7 +135,7 @@ io.sockets.on('connection', function (client) {
 
         console.log("Joining room " + room + ' with parameters ' + util.inspect(parameters));
         joinRoom(client, room, function (clients) {
-          client.json.send({action: 'roomAccept', data: parameters});
+          initClient(client, parameters);
         });
 
         break;

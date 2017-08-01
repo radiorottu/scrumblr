@@ -79,12 +79,6 @@ function getMessage(m) {
   //console.log('<-- ' + action);
 
   switch (action) {
-    case 'roomAccept':
-      //okay we're accepted, then request initialization
-      //(this is a bit of unnessary back and forth but that's okay for now)
-      sendAction('initializeMe', message.data);
-      break;
-
     case 'roomDeny':
       //this doesn't happen yet
       break;
@@ -222,8 +216,8 @@ function drawNewCard(id, x, y, rot, colour, text, description, sticker, animatio
   var h = '<div id="' + id + '" class="card ' + colour + ' draggable" style="-webkit-transform:rotate(' + rot +
     'deg);\
 ">\
-<i class="fa fa-window-close card-icon delete-card-icon" aria-hidden="true"></i>\
-<i class="fa fa-window-maximize card-icon card-details-icon" aria-hidden="true"></i>\
+<i class="fa fa-window-close card-icon delete-card-icon" aria-hidden="true" title="Delete post-it"></i>\
+<i class="fa fa-window-maximize card-icon card-details-icon" aria-hidden="true" title="Minimize/maximize post-it content"></i>\
 <img class="card-image" src="images/' + colour + '-card.png">\
   <div id="content:' + id + '" class="content stickertarget droppable">' + marked(text) + '</div>\
   <span class="filler"></span>\
