@@ -26,11 +26,13 @@ function sendAction(a, d) {
 socket.on('connect', function () {
   //console.log('successful socket.io connect');
 
-  //let the final part of the path be the room name
-  var room = location.pathname.substring(location.pathname.lastIndexOf('/'));
+  // FIXME smoreau: could connexion diagram be different ? currently we have
+  // FIXME   client > server: joinRoom
+  // FIXME   server > client: roomAccept
+  // FIXME   client > server: initializeMe
 
   //imediately join the room which will trigger the initializations
-  sendAction('joinRoom', room);
+  sendAction('joinRoom', location.href);
 });
 
 socket.on('disconnect', function () {
@@ -80,7 +82,7 @@ function getMessage(m) {
     case 'roomAccept':
       //okay we're accepted, then request initialization
       //(this is a bit of unnessary back and forth but that's okay for now)
-      sendAction('initializeMe', null);
+      sendAction('initializeMe', message.data);
       break;
 
     case 'roomDeny':
@@ -92,7 +94,7 @@ function getMessage(m) {
       break;
 
     case 'initCards':
-      initCards(data);
+      initCards(data, message.highlight);
       break;
 
     case 'createCard':
@@ -479,7 +481,7 @@ function randomCardColour() {
 }
 
 
-function initCards(cardArray) {
+function initCards(cardArray, highlight) {
   //first delete any cards that exist
   $('.card').remove();
 
@@ -499,6 +501,10 @@ function initCards(cardArray) {
       card.sticker,
       0
     );
+  }
+
+  if (typeof highlight !== 'undefined') {
+    $('#' + highlight).addClass('card-highlight');
   }
 
   boardInitialized = true;

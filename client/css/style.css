@@ -235,6 +235,10 @@ h2 {
 	border: 1px solid cornflowerblue;
 }
 
+.card-highlight {
+	border: 1px solid red;
+}
+
 #config-dropdown {
 	border: solid #666 5px;
 	width: 200px;

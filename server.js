@@ -1,8 +1,12 @@
 // vim:set noexpandtab:
+
+// FIXME smoreau: replace var with const if possible
+
 /**************
  SYSTEM INCLUDES
  **************/
 var http = require('http');
+var url = require('url');
 var sys = require('sys');
 var async = require('async');
 var sanitizer = require('sanitizer');
@@ -10,6 +14,11 @@ var compression = require('compression');
 var express = require('express');
 var conf = require('./config.js').server;
 var ga = require('./config.js').googleanalytics;
+var parse = require('parseurl');
+const querystring = require('querystring');
+const util = require('util');
+
+
 
 /**************
  LOCAL INCLUDES
@@ -73,7 +82,13 @@ router.get('/demo', function (req, res) {
   });
 });
 
-router.get('/:id', function (req, res) {
+router.get('/:roomID', function (req, res) {
+  // FIXME smoreau: how to get URL parameters back to io.sockets.on('connection') core
+  // bad design ?
+
+  //console.log("Getting route for " + util.inspect(req));
+  console.log("Getting route for room " + req.params.id + ' (client ' + req.client.roomID + ')');
+
   res.render('index.jade', {
     pageTitle: ('scrumblr - ' + req.params.id)
   });
@@ -100,6 +115,8 @@ function scrub(text) {
 }
 
 io.sockets.on('connection', function (client) {
+  //console.log("New client connected " + util.inspect(client) + client.id);
+  //console.log("New client connected " + util.inspect(client));
 
   client.on('message', function (message) {
     console.log(message.action + " -- " + sys.inspect(message.data));
@@ -112,14 +129,18 @@ io.sockets.on('connection', function (client) {
 
     switch (message.action) {
       case 'initializeMe':
-        initClient(client);
+        var optionalParameters = message.data;
+        initClient(client, optionalParameters);
         break;
 
       case 'joinRoom':
-        joinRoom(client, message.data, function (clients) {
+        var url = parse({ url: message.data });
+        var room = url.pathname;
+        var parameters = querystring.parse(url.query);
 
-          client.json.send({action: 'roomAccept', data: ''});
-
+        console.log("Joining room " + room + ' with parameters ' + util.inspect(parameters));
+        joinRoom(client, room, function (clients) {
+          client.json.send({action: 'roomAccept', data: parameters});
         });
 
         break;
@@ -359,21 +380,21 @@ io.sockets.on('connection', function (client) {
 /**************
  FUNCTIONS
  **************/
-function initClient(client) {
+function initClient(client, optionalParameters) {
   //console.log ('initClient Started');
   getRoom(client, function (room) {
 
     db.getAllCards(room, function (cards) {
+      var params = {
+        action: 'initCards',
+        data: cards,
+      }
+      if (optionalParameters && "highlight" in optionalParameters) {
+        params['highlight'] = optionalParameters.highlight;
+      }
 
-      client.json.send(
-        {
-          action: 'initCards',
-          data: cards
-        }
-      );
-
+      client.json.send(params);
     });
-
 
     db.getAllColumns(room, function (columns) {
       client.json.send(
@@ -677,7 +698,7 @@ function importJson(client, data) {
             };
             var promise = new Promise(function (resolve, reject) {
               db.createCard(room, c, function (cardWithLocalId) {
-                console.log("Added card " + c.id);
+                console.log("Added new card " + cardWithLocalId.id);
                 cards2.push(cardWithLocalId);
                 resolve();
               });
