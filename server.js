@@ -87,10 +87,10 @@ router.get('/:roomID', function (req, res) {
   // bad design ?
 
   //console.log("Getting route for " + util.inspect(req));
-  console.log("Getting route for room " + req.params.id + ' (client ' + req.client.roomID + ')');
+  console.log("Getting route for room " + req.params.roomID + ' (client ' + req.client.id + ')');
 
   res.render('index.jade', {
-    pageTitle: ('scrumblr - ' + req.params.id)
+    pageTitle: ('scrumblr - ' + req.params.roomID)
   });
 });
 
