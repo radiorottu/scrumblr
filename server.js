@@ -156,6 +156,16 @@ io.sockets.on('connection', function (client) {
 
         broadcastToRoom(client, message_out);
 
+        clean_data = {};
+        clean_data.id = scrub(message.data.id);
+        clean_data.actionOnCard = scrub('move');
+        clean_data.reset = true;
+
+        broadcastToRoom(client, {
+          action: 'highlightCard',
+          data: clean_data
+        });
+
         // console.log("-----" + message.data.id);
         // console.log(JSON.stringify(message.data));
 
@@ -212,6 +222,29 @@ io.sockets.on('connection', function (client) {
         };
 
         broadcastToRoom(client, message_out);
+
+        clean_data = {};
+        clean_data.id = scrub(message.data.id);
+        clean_data.actionOnCard = scrub('edit');
+        clean_data.reset = true;
+
+        broadcastToRoom(client, {
+          action: 'highlightCard',
+          data: clean_data
+        });
+
+        break;
+
+      case 'highlightCard':
+
+        clean_data = {};
+        clean_data.id = scrub(message.data.id);
+        clean_data.actionOnCard = scrub(message.data.actionOnCard);
+
+        broadcastToRoom(client, {
+          action: 'highlightCard',
+          data: clean_data
+        });
 
         break;
 

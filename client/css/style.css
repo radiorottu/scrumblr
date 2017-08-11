@@ -236,8 +236,17 @@ h2 {
 }
 
 .card-highlight {
-	border: 1px solid red;
+	border: 1px solid darkgreen;
 }
+
+.card-highlight-move {
+	border: 1px solid blueviolet;
+}
+
+.card-highlight-edit {
+    border: 1px solid red;
+}
+
 
 #config-dropdown {
 	border: solid #666 5px;

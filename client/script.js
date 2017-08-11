@@ -78,6 +78,8 @@ function getMessage(m) {
 
   //console.log('<-- ' + action);
 
+  // FIXME smoreau: cache $("#" + data.id)
+
   switch (action) {
     case 'roomDeny':
       //this doesn't happen yet
@@ -108,6 +110,16 @@ function getMessage(m) {
       $("#" + data.id).children('.content:first').data('text', data.value);
       $("#" + data.id).children('.content:first').data('description', data.desc);
       $("#" + data.id).children('.content:first').html(marked(data.value));
+      break;
+
+    case 'highlightCard':
+      var $card = $("#" + data.id);
+      var className = "card-highlight-" + data.actionOnCard;
+      if ("reset" in data) {
+        $card.removeClass(className);
+      } else {
+        $card.addClass(className);
+      }
       break;
 
     case 'initColumns':
@@ -249,6 +261,7 @@ function drawNewCard(id, x, y, rot, colour, text, description, sticker, animatio
     stack: ".card",
     start: function (event, ui) {
       keyTrap = null;
+      sendAction('highlightCard', { id: id, actionOnCard: 'move' });
     },
     drag: function (event, ui) {
       if (keyTrap == 27) {
@@ -382,6 +395,7 @@ function drawNewCard(id, x, y, rot, colour, text, description, sticker, animatio
   }, {
     type: 'textarea',
     data: function () {
+      sendAction('highlightCard', { id: id, actionOnCard: 'edit' });
       return getMarkDownData();
     },
     submit: 'OK',
