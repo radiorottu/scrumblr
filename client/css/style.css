@@ -738,12 +738,13 @@ img {
 
 
 #customizing-css-container {
+    padding: 10px;
     background-color: white;
     display: none;
     position: absolute;
     left: 0px;
-    width: 300px;
-    height: 500px;
+    min-width: 300px;
+    min-height: 500px;
     z-index: 10000;
 }
 

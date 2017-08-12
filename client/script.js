@@ -921,10 +921,6 @@ $(function () {
   $('#show-extra-buttons').click(function() {
     $('#show-extra-buttons').hide();
     $('.extra-buttons').fadeIn(200);
-
-    $("#customizing-css-container").toggle('slide', {
-      direction: 'left'
-    }, 200);
   });
 
   $('#import-json').click(function() {
@@ -935,7 +931,11 @@ $(function () {
     });
   });
 
-
+  $('#show-update-css').click(function () {
+    $("#customizing-css-container").toggle('slide', {
+      direction: 'left'
+    }, 200);
+  });
 
   $('#icon-col').hover(
     function () {
