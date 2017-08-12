@@ -247,7 +247,6 @@ h2 {
     border: 1px solid red;
 }
 
-
 #config-dropdown {
 	border: solid #666 5px;
 	width: 200px;
@@ -280,7 +279,7 @@ h2 {
 }
 
 .names p {
-	padding: 0; margin 0;
+	padding: 0; margin: 0;
 }
 
 .names ul {
@@ -392,6 +391,10 @@ xopacity: .5;
 	text-align: right;
 	padding: 10px 30px;
 	margin: 0;
+}
+
+.clear {
+    clear: both;
 }
 
 .ui-resizable-helper { border-right: 2px dotted #2bb282; }
@@ -727,4 +730,24 @@ img {
     position: absolute;
     left: 10px;
     bottom: 0px;
+}
+
+.main {
+    position: relative;
+}
+
+
+#customizing-css-container {
+    background-color: white;
+    display: none;
+    position: absolute;
+    left: 0px;
+    width: 300px;
+    height: 500px;
+    z-index: 10000;
+}
+
+#extra-css {
+    width: 270px;
+    height: 400px;
 }

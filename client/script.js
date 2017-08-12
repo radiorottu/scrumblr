@@ -921,6 +921,10 @@ $(function () {
   $('#show-extra-buttons').click(function() {
     $('#show-extra-buttons').hide();
     $('.extra-buttons').fadeIn(200);
+
+    $("#customizing-css-container").toggle('slide', {
+      direction: 'left'
+    }, 200);
   });
 
   $('#import-json').click(function() {
@@ -1083,5 +1087,9 @@ $(function () {
         height: $('.board-outline').css('height').replace('px', '')
       }
     });
-  })
+  });
+
+  $('#update-css').click(function () {
+    $("#personalized-css").html($("#extra-css").val());
+  });
 });
