@@ -217,7 +217,7 @@ function drawNewCard(id, x, y, rot, colour, text, description, sticker, animatio
     'deg);\
 ">\
 <i class="fa fa-window-close card-icon delete-card-icon" aria-hidden="true" title="Delete post-it"></i>\
-<i class="fa fa-window-maximize card-icon card-details-icon" aria-hidden="true" title="Minimize/maximize post-it content"></i>\
+<!--<i class="fa fa-window-maximize card-icon card-details-icon" aria-hidden="true" title="Minimize/maximize post-it content"></i>-->\
 <img class="card-image" src="images/' + colour + '-card.png">\
   <div id="content:' + id + '" class="content stickertarget droppable">' + marked(text) + '</div>\
   <span class="filler"></span>\
@@ -331,11 +331,13 @@ function drawNewCard(id, x, y, rot, colour, text, description, sticker, animatio
 
   card.children('.delete-card-icon').click(
     function () {
-      $("#" + id).remove();
-      //notify server of delete
-      sendAction('deleteCard', {
-        'id': id
-      });
+      if (confirm("Post-It löschen?")) {
+        $("#" + id).remove();
+        //notify server of delete
+        sendAction('deleteCard', {
+          'id': id
+        });
+      }
     }
   );
 

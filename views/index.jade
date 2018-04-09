@@ -10,7 +10,7 @@ block body
     div.fa.main-tool-bar
         div.buttons
             select(id="card-color", name="card-color", title="Choose the post-it type (color)")
-                each value in [['random', 'Random'], ['yellow', 'Story'], ['green', 'Middleware'], ['blue', 'Task'], ['white', 'White']]
+                each value in [['random', 'Random'], ['yellow', 'Yellow'], ['green', 'Green'], ['blue', 'Blue'], ['white', 'White']]
                     option(value="#{value[0]}") #{value[1]}
             i(title="Create new post-it")#create-card.fa.fa-plus-circle.fa-2x.bottom-icon
             i(title="Toggle large/small view")#smallify.fa.fa-search-minus.fa-2x.bottom-icon
@@ -33,9 +33,17 @@ block body
                     i.export-type csv
                 i(title="Create new revision of current board")#create-revision.fa.fa-camera-retro.fa-2x.bottom-icon
 
+    div.board-outline
+        div#board
+            div#board-doodles
+
+            table#board-table.board-table
+                tr
+                    td#icon-col(width='1%')
+                        image#add-col.col-icon(width='20', height='20', src='images/icons/iconic/raster/black/plus_alt_32x32.png')
+                        image#delete-col.col-icon(width='20', height='20', src='images/icons/iconic/raster/black/minus_alt_32x32.png')
+
     div.stickers
-            div.sticker.user#sticker-user1
-            div.sticker.user#sticker-user2
             each color in ['red', 'blue', 'yellow', 'green', 'pink', 'lightblue', 'orange', 'purple']
                 div(id="sticker-#{color}").sticker
             //div.sticker#sticker-silverstar
@@ -50,17 +58,6 @@ block body
             //	image(src="/images/stickers/sticker-silverstar.png")
             //div.sticker#sticker-redstar
             //	image(src="/images/stickers/sticker-redstar.png")
-
-    div.board-outline
-        div#board
-            div#board-doodles
-
-            table#board-table.board-table
-                tr
-                    td#icon-col(width='1%')
-                        image#add-col.col-icon(width='20', height='20', src='images/icons/iconic/raster/black/plus_alt_32x32.png')
-                        image#delete-col.col-icon(width='20', height='20', src='images/icons/iconic/raster/black/minus_alt_32x32.png')
-
 
 
 
