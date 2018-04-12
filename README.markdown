@@ -1,3 +1,8 @@
+
+rro
+========
+This app is hosted on heroku. Every push to master on github will deploy a new version of this app to heroku. https://rro-scrumblr.herokuapp.com/
+
 scrumblr
 ========
 
