@@ -46,9 +46,7 @@ app.locals.gaAccount = ga.account;
 router.use(express.static(__dirname + '/client'));
 
 var server = require('http').Server(app);
-server.listen(conf.port);
-
-console.log('Server running at http://127.0.0.1:' + conf.port + '/');
+server.listen(conf.port, () => console.log('Server running at http://127.0.0.1:' + conf.port + '/'));
 
 /**************
  SETUP Socket.IO

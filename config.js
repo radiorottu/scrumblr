@@ -12,7 +12,7 @@ var argv = require('yargs')
 
 exports.server = {
 	port: argv.port || process.env.PORT || 80,
-	baseurl: argv.baseurl || 'scrumblr'
+	baseurl: argv.baseurl || '/scrumblr'
 };
 
 exports.googleanalytics = {
