@@ -11,8 +11,8 @@ var argv = require('yargs')
         .argv;
 
 exports.server = {
-	port: argv.port || 8080,
-	baseurl: argv.baseurl || '/scrumblr'
+	port: argv.port || process.env.PORT || 8080,
+	baseurl: argv.baseurl
 };
 
 exports.googleanalytics = {
